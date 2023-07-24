@@ -1,0 +1,7 @@
+v2.0 : Gestion complete des MQ
+	- utilisation des mq_timedsend et mq_timedreceive
+	- inscription avec NONE, SIGNAL et THREAD de mq_notify
+
+v1.0 : Gestion des MQ "basiques"
+	- envoi et reception dans une MQ commune a 2 processus
+	- affichage des messages et de leurs priorites

@@ -1,0 +1,62 @@
+Makefile Rules :
+
+all (default) : compile les fichiers, les link, et produit un binaire a la
+    	      	racine
+
+clean : supprime le binaire, les .o, et tous les fichiers temporaires.
+        Attention : Makefile.rules est aussi supprime, il faut relancer
+	./configure apres un 'make clean'.
+
+dist : genere une tarball avec les sources et les tests, supprime les .svn.
+
+--------
+
+./MQTest  (affiche l'usage)
+
+./MQTest ex1
+Lance l'exemple 1 qui est un echange simple, voir les 2 fichiers crees :
+parent.log (processus pere qui ecrit dans la file) et child.log (processus fils
+qui lit la file en parallele).
+On voit l'importance de la priorite ainsi.
+
+./MQTest ex2
+Lance l'exemple 2 qui utilise des mq_timedsend/mq_timedreceive, et des
+mq_notify avec les 3 propriétés : NONE, SIGNAL et THREAD.
+Tous les OS ne reagissent pas de la meme facon sur le mq_notify !
+FreeBSD 9.0 conserve le passage vide -> non vide en memoire et declenche
+le mecanisme souhaite, meme si celui-ci a ete inscrit APRES l'evenement.
+Debian 7.0 se comporte correctement.
+Cygwin n'a aucune reaction : aucun signal ni thread a aucun moment.
+
+--------
+
+FreeBSD (7.x et +)
+
+Ajouter le module pour les Message Queues POSIX.
+Kernel loadable module : kldload mqueuefs
+Options recompilation kernel : options P1003_1B_MQUEUE
+
+Monter le FS des MQ (creer d'abord le dossier cible (quel qu'il soit)) :
+mount -t mqueuefs null /mnt/mqueue
+
+Si la MQ est pleine, le FS mqueue est cache de l'arborescence (il est possible
+de le remonter, mais impossible d'ecrire dedans ! Sauf si flag... cf man).
+
+Puis lancer l'application
+
+FreeBSD 7.0 ne sait pas lancer de thread ni de signal avec mq_notify.
+FreeBSD 9.0 inclut le mq_notify "correctement".
+
+--------
+
+Sur Debian (6 - Squeeze, et +), les POSIX Message Queues sont activees de base.
+
+Depuis les linux kernel 2.6.6, et la Glibc 2.3.4, elles sont disponibles.
+
+Pas de MQ_PRIO_MAX dans <limits.h>. Mais defini ailleurs ?!
+
+L'option kernel pour Debian est : CONFIG_POSIX_MQUEUE
+Par defaut elle est activee, et utilise la lib RT (RealTime).
+
+Debian ne sait pas lancer de thread depuis mq_notify, et le signal n'est lance
+que lorsque la file etait vide et se re-remplit.

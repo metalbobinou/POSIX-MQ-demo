@@ -1,0 +1,3 @@
+- Tests sur encore plus d'OS
+- Verifier dans quels cas se declenechent les evenements, et reorganiser 
+l'ordre des actions pour voir les declenchements differes

@@ -1,0 +1,9 @@
+Sur Debian 6 (Squeeze), les POSIX Message Queues sont activees de base.
+
+Depuis les linux kernel 2.6.6, et la Glibc 2.3.4, elles sont disponibles.
+
+L'option kernel pour Debian est : CONFIG_POSIX_MQUEUE
+Par defaut elle est activee, et utilise la lib RT (RealTime).
+
+Chez OVH elle n'est PAS activee !
+Peut etre a cause du GRSec ? Ou autre ?... je ne sais pas.

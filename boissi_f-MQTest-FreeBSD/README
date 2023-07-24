@@ -1,0 +1,10 @@
+FreeBSD (7.x et +)
+
+Ajouter le module pour les Message Queues POSIX.
+Kernel loadable module : kldload mqueuefs
+Options recompilation kernel : options P1003_1B_MQUEUE
+
+Monter le FS des MQ (creer d'abord le dossier cible (quel qu'il soit)) :
+mount -t mqueuefs null /mnt/mqueue
+
+Puis lancer l'application

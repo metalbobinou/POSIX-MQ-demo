@@ -1,0 +1,78 @@
+#! /bin/sh
+
+# Logging error : make > make.log 2>&1
+# Project's tarball preparation in Makefile
+# Project's binary and sources in src/Makefile
+
+# Detecting OS commands (make/gmake, md5/md5sum, ...)
+OS=`uname`
+
+#  cygwin workout
+CYGWIN_PATTERN=${OS##CYGWIN}
+CYG_OS=${OS%%${CYGWIN_PATTERN}}
+
+if [ "$OS" = "FreeBSD" ]; then
+	echo "Configure for FreeBSD"
+	MAKE="gmake"
+	MD5="md5"
+elif [ "$OS" = "Debian" ]; then
+	echo "Configure for Debian"
+	MAKE="make"
+	MD5="md5sum"
+elif [ "$OS" = "Linux" ]; then
+	echo "Configure for Linux (generic)"
+	MAKE="make"
+	MD5="md5sum"
+elif [ "$CYG_OS" = "CYGWIN" ]; then
+	echo "Configure for Cygwin"
+	MAKE="make"
+	MD5="md5sum"
+else
+	echo "Generic configure"
+	MAKE="make"
+	MD5="md5"
+fi
+
+# C Compiler declaration
+CC="/usr/bin/gcc"
+
+# CFLAGS declaration
+if [ $# -eq 0 ]; then
+	CFLAGS="-W -Wall -Werror -ansi -pedantic"
+else
+	VAL=`echo $1 | tr '[:lower:]' '[:upper:]' | tr -d '\n'`
+	if [ "$VAL" = "ANSI" ]; then
+		CFLAGS="-W -Wall -Werror -ansi -pedantic"
+	elif [ "$VAL" = "C89" ]; then
+		CFLAGS="-W -Wall -Werror -ansi -pedantic"
+	elif [ "$VAL" = "C99" ]; then
+		CFLAGS="-Wextra -Wall -Werror -std=c99 -pedantic"
+	elif [ "$VAL" = "DEBUG" ]; then
+		CFLAGS="-Wextra -Wall -Werror -pedantic -g -g3 -ggdb"
+	else
+		CFLAGS="-W -Wall -Werror -ansi -pedantic"
+	fi
+fi
+
+# Adding useful CFLAGS for POSIX MQ
+CFLAGS="${CFLAGS} -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200112L"
+
+# Adding CFLAGS for shared lib (.so)
+#CFLAGS="${CFLAGS} -fPIC"
+
+# LDFLAGS declaration
+LDFLAGS="-lrt"
+
+echo "CC=${CC}" > Makefile.rules
+echo "CFLAGS=${CFLAGS}" >> Makefile.rules
+echo "LDFLAGS=${LDFLAGS}" >> Makefile.rules
+#echo "STATIC=${STATIC}" >> Makefile.rules
+#echo "DYNAMIC=${DYNAMIC}" >> Makefile.rules
+echo "MAKE=${MAKE}" >> Makefile.rules
+echo "MD5=${MD5}" >> Makefile.rules
+
+echo "CC=${CC}"
+echo "CFLAGS=${CFLAGS}"
+echo "LDFLAGS=${LDFLAGS}"
+echo "MAKE=${MAKE}"
+echo "MD5=${MD5}"

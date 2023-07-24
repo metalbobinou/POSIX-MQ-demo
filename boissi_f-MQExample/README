@@ -1,0 +1,27 @@
+FreeBSD (7.x et +)
+
+Ajouter le module pour les Message Queues POSIX.
+Kernel loadable module : kldload mqueuefs
+Options recompilation kernel : options P1003_1B_MQUEUE
+
+Monter le FS des MQ (creer d'abord le dossier cible (quel qu'il soit)) :
+mount -t mqueuefs null /mnt/mqueue
+
+Si la MQ est pleine, le FS mqueue est cache de l'arborescence (il est possible
+de le remonter, mais impossible d'ecrire dedans ! Sauf si flag... cf man).
+
+Puis lancer l'application
+
+--------
+
+Sur Debian (6 - Squeeze, et +), les POSIX Message Queues sont activees de base.
+
+Depuis les linux kernel 2.6.6, et la Glibc 2.3.4, elles sont disponibles.
+
+Pas de MQ_PRIO_MAX dans <limits.h>. Mais defini ailleurs ?!
+
+L'option kernel pour Debian est : CONFIG_POSIX_MQUEUE
+Par defaut elle est activee, et utilise la lib RT (RealTime).
+
+Chez OVH elle n'est PAS activee !
+Peut etre a cause du GRSec ? Ou autre ?... je ne sais pas.

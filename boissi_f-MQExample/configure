@@ -1,0 +1,41 @@
+#! /bin/sh
+
+if [ $# -eq 0 ]; then
+	CFLAGS="-W -Wall -Werror -ansi -pedantic"
+else
+	VAL=`echo $1 | tr '[:lower:]' '[:upper:]' | tr -d '\n'`
+	if [ "$VAL" = "ANSI" ]; then
+		CFLAGS="-W -Wall -Werror -ansi -pedantic"
+	elif [ "$VAL" = "C89" ]; then
+		CFLAGS="-W -Wall -Werror -ansi -pedantic"
+	elif [ "$VAL" = "C99" ]; then
+		CFLAGS="-W -Wall -Werror -std=c99 -pedantic"
+	elif [ "$VAL" = "DEBUG" ]; then
+		CFLAGS="-W -Wall -Werror -pedantic -g -g3 -ggdb"
+	else
+		CFLAGS="-W -Wall -Werror -ansi -pedantic"
+	fi
+fi
+
+OS=`uname`
+if [ "$OS" = "FreeBSD" ]; then
+	MAKE="gmake"
+	MD5="md5"	
+elif [ "$OS" = "Debian" ]; then
+	MAKE="make"
+	MD5="md5sum"
+else
+	MAKE="make"
+	MD5="md5"
+fi
+
+CC="/usr/bin/gcc"
+LDFLAGS="-lrt"
+echo "CC=${CC}" > Makefile.rules
+echo "CFLAGS=${CFLAGS}" >> Makefile.rules
+echo "LDFLAGS=${LDFLAGS}" >> Makefile.rules
+#echo "ASKED=${ASKED}" >> Makefile.rules
+#echo "STATIC=${STATIC}" >> Makefile.rules
+#echo "DYNAMIC=${DYNAMIC}" >> Makefile.rules
+echo "MAKE=${MAKE}" >> Makefile.rules
+echo "MD5=${MD5}" >> Makefile.rules
